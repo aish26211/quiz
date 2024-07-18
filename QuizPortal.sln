@@ -6,11 +6,11 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizPortal", "QuizPortal\QuizPortal.csproj", "{18FD7D50-830E-44A0-9875-E1CA120C7F42}"
 EndProject
 Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+	GlobalSection(SolutionConfigurationPlatforms) = resolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+	GlobalSection(ProjectConfigurationPlatforms) = post solution
 		{18FD7D50-830E-44A0-9875-E1CA120C7F42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{18FD7D50-830E-44A0-9875-E1CA120C7F42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18FD7D50-830E-44A0-9875-E1CA120C7F42}.Release|Any CPU.ActiveCfg = Release|Any CPU
