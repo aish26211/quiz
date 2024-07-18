@@ -183,5 +183,47 @@ namespace QuizPortal.Controllers
 
             return View(quizViewDto);
         }
+        [HttpPost]
+        public async Task<IActionResult> SubmitQuiz(QuizSubmissionDto quizSubmission)
+        {
+            if (HttpContext.Session.GetString(Constants.SessionUserId) == null)
+            {
+                return Redirect(Url.Action("Login", "User"));
+            }
+
+            var quizRepository = _repositoryFactory.GetQuizRepository();
+            var questionRepository = _repositoryFactory.GetQuestionRepository();
+
+            var quiz = await quizRepository.GetQuizAsync(quizSubmission.QuizId);
+            if (quiz == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var questions = await questionRepository.GetAllQuestionsAsync(quizSubmission.QuizId);
+            var questionDtos = _mapper.Map<List<QuestionDto>>(questions);
+
+            // Compare submitted answers with correct answers
+            foreach (var questionDto in questionDtos)
+            {
+                var submittedAnswer = quizSubmission.Answers
+                    .FirstOrDefault(a => a.QuestionId == questionDto.Id)?.SelectedAnswer;
+                questionDto.SelectedAnswer = submittedAnswer;
+                questionDto.CorrectAnswer = submittedAnswer;
+            }
+
+            var quizViewDto = new QuizViewDto
+            {
+                QuizDto = _mapper.Map<QuizDto>(quiz),
+                QuestionDtoList = questionDtos
+            };
+
+            return View("QuizResult", quizViewDto);
+        }
     }
+
+
+
+
+
 }

@@ -5,9 +5,10 @@ namespace QuizPortal.Models.Dtos
     public class QuestionDto
     {
         [Required]
-        public string QuestionText { get; set; }
+        public int Id { get; set; }
 
         [Required]
+        public string QuestionText { get; set; }
         public string AnswerA { get; set; }
 
         [Required]
@@ -21,5 +22,7 @@ namespace QuizPortal.Models.Dtos
 
         [Required]
         public string CorrectAnswer { get; set; }
+
+        public string SelectedAnswer { get; set; }
     }
 }

@@ -16,22 +16,36 @@
 
 <br />
 
+<div class="text-center">
+    <h2>Time left:</h2> <span id="timer">10:00</span>
+</div>
+
+<br />
+
 <div id="questionSection" class="container row">
     @for (int i = 0; i < Model.QuestionDtoList.Count; i++)
     {
         <div class="border container col-5 bg-light" style="padding:30px; border-radius:20px; margin-bottom:20px;">
             <div id="question+@i">
                 <div class="form-group row">
-                    <label>@(i+1)) @Model.QuestionDtoList[i].QuestionText</label>
+                    <label>@(i + 1)) @Model.QuestionDtoList[i].QuestionText</label>
                 </div>
 
                 <br />
 
                 <div>
-                    <label style="overflow:hidden;" for="A" onclick="answerOnClick(@i, 'A')" id="question+@i+A" class="form-control custom+@i">A) @Model.QuestionDtoList[i].AnswerA</label>
-                    <label style="overflow:hidden;" for="B" onclick="answerOnClick(@i, 'B')" id="question+@i+B" class="form-control custom+@i">B) @Model.QuestionDtoList[i].AnswerB</label>
-                    <label style="overflow:hidden;" for="C" onclick="answerOnClick(@i, 'C')" id="question+@i+C" class="form-control custom+@i">C) @Model.QuestionDtoList[i].AnswerC</label>
-                    <label style="overflow:hidden;" for="D" onclick="answerOnClick(@i, 'D')" id="question+@i+D" class="form-control custom+@i">D) @Model.QuestionDtoList[i].AnswerD</label>
+                    <label style="overflow:hidden;" for="A" onclick="answerOnClick(@i, 'A')" id="question+@i+A" class="form-control custom+@i @((Model.QuestionDtoList[i].SelectedAnswer == "A") ? "selected-answer" : "")">A) @Model.QuestionDtoList[i].AnswerA</label>
+                    <label style="overflow:hidden;" for="B" onclick="answerOnClick(@i, 'B')" id="question+@i+B" class="form-control custom+@i @((Model.QuestionDtoList[i].SelectedAnswer == "B") ? "selected-answer" : "")">B) @Model.QuestionDtoList[i].AnswerB</label>
+                    <label style="overflow:hidden;" for="C" onclick="answerOnClick(@i, 'C')" id="question+@i+C" class="form-control custom+@i @((Model.QuestionDtoList[i].SelectedAnswer == "C") ? "selected-answer" : "")">C) @Model.QuestionDtoList[i].AnswerC</label>
+                    <label style="overflow:hidden;" for="D" onclick="answerOnClick(@i, 'D')" id="question+@i+D" class="form-control custom+@i @((Model.QuestionDtoList[i].SelectedAnswer == "D") ? "selected-answer" : "")">D) @Model.QuestionDtoList[i].AnswerD</label>
+                </div>
+                <br />
+
+                <div>
+                    @if (Model.QuestionDtoList[i].SelectedAnswer != null)
+                    {
+                        <strong>Your Selected Answer:</strong> <span class="selected-answer">@Model.QuestionDtoList[i].SelectedAnswer</span>
+                    }
                 </div>
             </div>
         </div>
@@ -42,18 +56,62 @@
 
 <div class="form-group row">
     <div class="col-4 offset-4">
-        <button id="completeBtn" onclick="CompleteQuiz();" class="btn btn-info form-control">Complete the Quiz</button>
+        <form id="quizForm" asp-action="SubmitQuiz" method="post">
+            <!-- Ensure this action exists in your controller -->
+            <button id="completeBtn" type="submit" class="btn btn-info form-control" onclick="CompleteQuiz()">Complete the Quiz</button>
+        </form>
     </div>
 </div>
 
 <div style="visibility:hidden">
-    @for(int i=0; i<Model.QuestionDtoList.Count; i++)
+    @for (int i = 0; i < Model.QuestionDtoList.Count; i++)
     {
         <input value="@Model.QuestionDtoList[i].CorrectAnswer" id="correct+@i" />
     }
 </div>
 
-@section Scripts{
+@section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/js/Quiz.js"></script>
+    <script>
+        let timer;
+        let timeLeft = 600; // 10 minutes in seconds
+
+        function startTimer() {
+            const timerElement = document.getElementById('timer');
+            timer = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    alert("Time's up!");
+                    document.getElementById('quizForm').submit(); // Automatically submit the quiz form
+                } else {
+                    timeLeft--;
+                    let minutes = Math.floor(timeLeft / 60);
+                    let seconds = timeLeft % 60;
+                    timerElement.innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                }
+            }, 1000);
+        }
+
+        window.onload = startTimer;
+
+        function CompleteQuiz() {
+            clearInterval(timer); // Stop the timer
+            $('#timer').hide(); // Hide the timer section
+        }
+
+        function answerOnClick(questionIndex, answer) {
+            document.querySelectorAll('.custom' + questionIndex).forEach(label => {
+                label.classList.remove('selected-answer');
+            });
+            document.getElementById('question+' + questionIndex + '+' + answer).classList.add('selected-answer');
+        }
+    </script>
+    <style>
+        .selected-answer {
+            font-weight: bold;
+        }
+    </style>
+}
 }
