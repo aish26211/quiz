@@ -183,5 +183,13 @@ namespace QuizPortal.Controllers
 
             return View(quizViewDto);
         }
+        [HttpPost]
+        public async Task<IActionResult> SubmitQuiz(QuizSubmissionDto quizSubmission)
+        {
+            
+
+            // Redirect to a result page or return JSON response as needed
+            return RedirectToAction("Index", "Home"); // Redirect to home page after submission
+        }
     }
 }
