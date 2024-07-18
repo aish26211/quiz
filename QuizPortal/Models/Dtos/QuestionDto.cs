@@ -21,7 +21,5 @@ namespace QuizPortal.Models.Dtos
 
         [Required]
         public string CorrectAnswer { get; set; }
-
-        public string SelectedAnswer {  get; set; }
     }
 }
